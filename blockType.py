@@ -8,6 +8,7 @@ class BlockType(Enum):
 
     方块类型枚举类。保存了每种方块的ID。
     """
+    UNKNOWN = 0
     STONE = 1
     AIR = 2
     WATER = 3
