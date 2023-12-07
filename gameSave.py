@@ -47,7 +47,7 @@ class GameSave:
                 self._data[sub_dir] = {}
                 self._read_env(full_path, self._data[sub_dir])
 
-        self.chunks = self._data["world_db"]["blocks"]
+        self.chunks = self._data["world_db"][b"blocks"]
     
     def __repr__(self):
         return repr(self._data)
@@ -196,23 +196,23 @@ class GameSave:
         提供简要的世界基本信息。
         """
         info = {}
-        info["world_name"] = self._data["world_db"]["main"]["worldv2"]\
+        info["world_name"] = self._data["world_db"][b"main"][b"worldv2"]\
                                        ["worldName"]
         info["start_portal_pos"] = (
-            self._data["world_db"]["main"]["worldv2"]["startPortalPos.x"],
-            self._data["world_db"]["main"]["worldv2"]["startPortalPos.y"]
+            self._data["world_db"][b"main"][b"worldv2"]["startPortalPos.x"],
+            self._data["world_db"][b"main"][b"worldv2"]["startPortalPos.y"]
         )
         info["seed"] = \
-            self._data["world_db"]["main"]["worldv2"]["randomSeed"]
+            self._data["world_db"][b"main"][b"worldv2"]["randomSeed"]
         info["width"] = \
-            self._data["world_db"]["main"]["worldv2"]["worldWidthMacro"] << 5
+            self._data["world_db"][b"main"][b"worldv2"]["worldWidthMacro"] << 5
         info["expertMode"] = \
-            self._data["world_db"]["main"]["worldv2"]["expertMode"]
+            self._data["world_db"][b"main"][b"worldv2"]["expertMode"]
         return info
     
     def get_chunk(self, x, y):
-        assert 0 <= x < self._data["world_db"]["main"] \
-            ["worldv2"]["worldWidthMacro"] and 0 <= y < 32
+        assert 0 <= x < self._data["world_db"][b"main"] \
+            [b"worldv2"]["worldWidthMacro"] and 0 <= y < 32
         name = "%d_%d" % (x, y)
         if name not in self.chunks:
             self.chunks[name] = Chunk.create()
@@ -228,8 +228,8 @@ class GameSave:
         return [[int(_) for _ in name.split("_")] for name in self.chunks]
 
     def get_block(self, x, y):
-        assert 0 <= x < (self._data["world_db"]["main"] \
-            ["worldv2"]["worldWidthMacro"] << 5) and 0 <= y < 1024
+        assert 0 <= x < (self._data["world_db"][b"main"] \
+            [b"worldv2"]["worldWidthMacro"] << 5) and 0 <= y < 1024
         name = "%d_%d" % (x >> 5, y >> 5)
         if not isinstance(self.chunks[name], Chunk):
             self.chunks[name] = Chunk(self.chunks[name]._data[0])
@@ -243,13 +243,13 @@ class GameSave:
         """
         return [
             Blockhead(d)
-            for d in self["world_db"]["main"]["blockheads"]["dynamicObjects"]
+            for d in self["world_db"][b"main"][b"blockheads"]["dynamicObjects"]
         ]
     
     def get_inventory(self, blockhead):
         assert isinstance(blockhead, Blockhead)
-        return Inventory(self["world_db"]["main"]\
-            ["blockhead_%d_inventory" % blockhead.get_uid()])
+        return Inventory(self["world_db"][b"main"]\
+            [b"blockhead_%d_inventory" % blockhead.get_uid()])
 
 
 if __name__ == "__main__":
