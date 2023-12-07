@@ -96,18 +96,19 @@ class GameSave:
         - xml plist files
         """
         if isinstance(src, (str, bytes, biplist.Data)):
-            if src.startswith(b"bplist00"):  # bplist
-                result = BPList(biplist.readPlistFromString(src),
-                                src_type="bp")
-                return self._parse(result)
-            if src.startswith(b"\x1f\x8b"):  # gzip
-                result = GzipWrapper(src)
-                result._data[0] = self._parse(result._data[0])
-                return result
-            if src.startswith(b"<?xml"):  # xml plist
-                result = BPList(biplist.readPlistFromString(src),
-                                src_type="xml")
-                return self._parse(result)
+            if not isinstance(src, str):
+                if src.startswith(b"bplist00"):  # bplist
+                    result = BPList(biplist.readPlistFromString(src),
+                                    src_type="bp")
+                    return self._parse(result)
+                if src.startswith(b"\x1f\x8b"):  # gzip
+                    result = GzipWrapper(src)
+                    result._data[0] = self._parse(result._data[0])
+                    return result
+                if src.startswith(b"<?xml"):  # xml plist
+                    result = BPList(biplist.readPlistFromString(src),
+                                    src_type="xml")
+                    return self._parse(result)
             return src
         elif isinstance(src, (list, tuple)):
             for i, v in enumerate(src):
